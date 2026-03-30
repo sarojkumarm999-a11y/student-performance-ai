@@ -1,0 +1,78 @@
+{
+  "data": {
+    "rows": 101,
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "gpa": {
+    "mae": 0.027892857142852934,
+    "rmse": 0.03631863207382737,
+    "r2": 0.9979622877288103
+  },
+  "grade": {
+    "accuracy": 1.0,
+    "report": {
+      "A": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 6.0
+      },
+      "B": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3.0
+      },
+      "B+": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 5.0
+      },
+      "C": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 2.0
+      },
+      "D": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 4.0
+      },
+      "F": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 1.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 21.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 21.0
+      }
+    },
+    "labels": [
+      "A",
+      "B",
+      "B+",
+      "C",
+      "D",
+      "F"
+    ]
+  },
+  "pass_fail": {
+    "accuracy": 1.0,
+    "f1": 1.0
+  }
+}

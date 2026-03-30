@@ -1,0 +1,27 @@
+{
+  "required_features": [
+    "age",
+    "gender",
+    "attendance_pct",
+    "study_hours_per_day",
+    "prev_gpa",
+    "assignments_submitted",
+    "extracurricular_score",
+    "parent_education",
+    "internet_access",
+    "part_time_job",
+    "counseling_sessions",
+    "behavioral_notes"
+  ],
+  "targets": [
+    "predicted_gpa",
+    "grade",
+    "pass_fail"
+  ],
+  "artifacts": {
+    "model_gpa": "artifacts/model_gpa.joblib",
+    "model_grade": "artifacts/model_grade.joblib",
+    "model_pass_fail": "artifacts/model_pass_fail.joblib",
+    "metrics": "artifacts/metrics.json"
+  }
+}
