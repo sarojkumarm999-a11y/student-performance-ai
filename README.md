@@ -6,18 +6,45 @@ An end-to-end Machine Learning and Natural Language Processing (NLP) web applica
 
 ## 🚀 Key Features
 
-- **Multi-Target Predictive Machine Learning**:
-  - **GPA Regression**: Predicts final cumulative GPA ($0.00 - 10.00$) using Random Forest Regressor ($R^2 > 0.99$).
-  - **Grade Classification**: Multi-class classification ($A, B+, B, C, D, F$) via Gradient Boosting.
-  - **Pass / Fail Classification**: Binary at-risk status identification ($1 = \text{Pass}, 0 = \text{At-Risk / Fail}$) via Gradient Boosting.
+- **Multi-Target Predictive Machine Learning Pipeline**:
+  - **GPA Regression**: Predicts final cumulative GPA on a **$0.00 - 10.00$ scale** using Random Forest Regressor ($R^2 > 0.99$, $MAE \approx 0.079$).
+  - **Grade Tier Classification**: Multi-class classification ($A, B+, B, C, D, F$) via Gradient Boosting.
+  - **3-Tier Academic Status Classification**:
+    - 🟢 **`PASS`**: Predicted GPA $> 6.0$
+    - 🟡 **`AT RISK`**: Predicted GPA between $4.5 - 6.0$
+    - 🔴 **`FAIL`**: Predicted GPA $< 4.5$
 - **Natural Language Processing (NLP)**:
   - Custom `SentimentFeatures` pipeline transformer utilizing **VADER SentimentIntensityAnalyzer** to derive numerical sentiment polarity (`compound`, `pos`, `neu`, `neg`) and text length metrics from qualitative behavioral notes.
 - **Generative AI Academic Insights**:
-  - Embedded OpenRouter API integration to output personalized 5-bullet action plans, risk flags, and supportive student guidance out-of-the-box.
-- **Flexible Previous GPA Scale ($0.0 - 10.0$)**:
-  - SupportsPrevious GPA entries on a $0.0 - 10.0$ scale with automatic preprocessing and clipping.
-- **Interactive Web Interface & REST API**:
-  - Modern Flask web application with dark-mode aesthetic, dynamic progress bars, glowing status badges, live model metrics visualizer, and example autofill.
+  - OpenRouter API integration to output personalized 5-bullet action plans, risk flags, and supportive student guidance out-of-the-box (`Predict + AI Insights`).
+- **1-Click Interactive Demo & REST API**:
+  - Modern Flask web dashboard with dark-mode aesthetic, dynamic progress bars, glowing status badges, live model metrics visualizer, and 1-click **⚡ Fill Example** workflow.
+
+---
+
+## ⚡ Prediction Methodology & Fill Example Workflow
+
+The application includes a **⚡ Fill Example** button to instantly test model inference with a realistic student profile:
+
+### Sample Student Input Profile:
+- **Age**: `19` years
+- **Gender**: `Female`
+- **Attendance**: `88.5%`
+- **Study Hours / Day**: `4.5` hours
+- **Previous GPA**: `8.30` / 10.00
+- **Assignments Submitted**: `90%`
+- **Extracurricular Score**: `7` / 10
+- **Parent Education**: `Bachelor`
+- **Internet Access**: `Yes (1)`
+- **Part-Time Job**: `No (0)`
+- **Counseling Sessions**: `2`
+- **Behavioral & Observational Notes**: *"Highly engaged student, demonstrates active participation, attends tutoring regularly, and shows strong teamwork."*
+
+### Prediction Output Results:
+- 📈 **Predicted GPA**: `8.44 / 10.00`
+- 🏷️ **Predicted Grade**: `B+`
+- 🛡️ **Academic Status**: `PASS` (Green glowing status badge)
+- 💡 **AI Insights Output**: Personalized 3-sentence performance summary, 5-bullet measurable action plan, 3 risk flags to monitor, and 2 encouragement lines.
 
 ---
 
@@ -28,20 +55,21 @@ student-performance-system/
 ├── app.py                      # Flask web server & REST API entry point
 ├── main.py                     # CLI quick inspection script
 ├── requirements.txt            # Python dependencies
+├── Procfile                    # Production Cloud Deployment config (Gunicorn)
 ├── README.md                   # Project documentation
 ├── artifacts/                  # Trained models & metrics schema
 │   ├── metrics.json            # Model evaluation metrics
 │   ├── schema.json             # Feature schema metadata
 │   ├── model_gpa.joblib        # Random Forest GPA model
 │   ├── model_grade.joblib      # Gradient Boosting Grade model
-│   └── model_pass_fail.joblib  # Gradient Boosting Pass/Fail model
+│   └── model_pass_fail.joblib  # Gradient Boosting Status model
 ├── data/                       # Dataset directory
 │   └── raw/
-│       └── student_data.csv    # Student training dataset
+│       └── student_data.csv    # Rescaled 10-point student dataset
 ├── src/                        # Core ML & NLP pipeline modules
 │   ├── __init__.py
 │   ├── preprocess.py           # Data cleaning & VADER sentiment transformer
-│   ├── predict.py              # Inference engine & feature coercion
+│   ├── predict.py              # Inference engine & 3-tier feature coercion
 │   ├── train.py                # Model training & artifact serialization
 │   └── llm_insights.py         # OpenRouter / Anthropic LLM insights integration
 ├── templates/
@@ -60,12 +88,16 @@ student-performance-system/
 
 ### 2. Clone & Install Dependencies
 ```bash
+# Clone the repository
+git clone https://github.com/sarojkumarm999-a11y/student-performance-ai.git
+cd student-performance-ai
+
 # Install required Python packages
 pip install -r requirements.txt
 ```
 
 ### 3. API Key Configuration
-The application comes pre-configured with OpenRouter key support for instant AI insights out of the box. You can also set custom environment keys:
+The application comes with OpenRouter integration. You can set custom environment keys if desired:
 ```bash
 # On Linux/macOS
 export OPENROUTER_API_KEY="your-api-key-here"
@@ -97,7 +129,7 @@ python app.py
 ```
 
 Open your browser and navigate to:
-👉 `http://localhost:5000`
+👉 **`http://localhost:5000`**
 
 ---
 
@@ -120,7 +152,7 @@ Open your browser and navigate to:
       "internet_access": 1,
       "part_time_job": 0,
       "counseling_sessions": 2,
-      "behavioral_notes": "Highly engaged student with strong leadership skills."
+      "behavioral_notes": "Highly engaged student, demonstrates active participation, attends tutoring regularly, and shows strong teamwork."
     }
   }
   ```
@@ -128,7 +160,7 @@ Open your browser and navigate to:
   ```json
   {
     "predictions": {
-      "predicted_gpa": 3.36,
+      "predicted_gpa": 8.44,
       "grade": "B+",
       "pass_fail": 1
     }
@@ -137,7 +169,7 @@ Open your browser and navigate to:
 
 ### 2. Prediction with AI Academic Insights
 - **Endpoint**: `POST /api/predict-with-insights`
-- **Response**: Includes `predictions` plus personalized `insights` narrative generated via LLM.
+- **Response**: Includes `predictions` plus personalized `insights` narrative generated via OpenRouter LLM.
 
 ### 3. Batch Student Predictions
 - **Endpoint**: `POST /api/batch`
@@ -153,7 +185,7 @@ Open your browser and navigate to:
 
 | Model Target | Algorithm | Key Metric | Benchmark Score |
 | :--- | :--- | :--- | :--- |
-| **GPA Prediction** | Random Forest Regressor | Mean Absolute Error (MAE) | `~0.027` |
+| **GPA Prediction** | Random Forest Regressor | Mean Absolute Error (MAE) | `~0.079` |
 | **GPA Prediction** | Random Forest Regressor | $R^2$ Score | `> 0.99` |
-| **Grade Tier Classification** | Gradient Boosting Classifier | Accuracy | `100%` |
-| **Pass / Fail Status** | Gradient Boosting Classifier | F1 Score | `1.00` |
+| **Grade Tier Classification** | Gradient Boosting Classifier | Accuracy | `95.2%` |
+| **Academic Status Tier (Pass/Risk/Fail)** | Gradient Boosting Classifier | Macro F1 Score | `0.941` |
