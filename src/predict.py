@@ -87,9 +87,19 @@ class Predictor:
         self._ensure_loaded()
         X = self._to_frame(students)
 
-        gpa = self._model_gpa.predict(X)
-        grade = self._model_grade.predict(X)
-        pass_fail = self._model_pass.predict(X)
+        try:
+            gpa = self._model_gpa.predict(X)
+            grade = self._model_grade.predict(X)
+            pass_fail = self._model_pass.predict(X)
+        except Exception:
+            # If scikit-learn version mismatch occurs during transform/predict, retrain models dynamically on the server
+            from .train import train_models
+
+            train_models()
+            self.load()
+            gpa = self._model_gpa.predict(X)
+            grade = self._model_grade.predict(X)
+            pass_fail = self._model_pass.predict(X)
 
         results: List[Dict[str, Any]] = []
         for i in range(len(X)):
