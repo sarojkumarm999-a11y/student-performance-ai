@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Student Performance Prediction & Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <div class="bg">
+      <div class="grain"></div>
+      <div class="radial a"></div>
+      <div class="radial b"></div>
+    </div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="title">Student Performance Prediction System</div>
+          <div class="subtitle">ML Ensemble Analytics + VADER NLP + LLM Insights</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="btnMetrics">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          View Model Metrics
+        </button>
+        <button class="btn ghost" id="btnReset">Clear</button>
+        <button class="btn" id="btnExample">⚡ Fill Example</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel">
+        <div class="panel-header">
+          <h2>Student Features Input</h2>
+          <p>Provide student academic and behavioral metrics. Sentiment analysis is automatically performed on behavioral notes.</p>
+        </div>
+
+        <form id="predictForm" class="form">
+          <div class="grid">
+            <div class="field">
+              <label for="inputAge">Age (Years)</label>
+              <input id="inputAge" type="number" name="age" min="10" max="100" step="1" placeholder="e.g., 19" required />
+            </div>
+
+            <div class="field">
+              <label for="inputGender">Gender</label>
+              <select id="inputGender" name="gender" required>
+                <option value="" selected disabled>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="inputAttendance">Attendance (%)</label>
+              <input id="inputAttendance" type="number" name="attendance_pct" min="0" max="100" step="0.1" placeholder="e.g., 88.5" required />
+            </div>
+
+            <div class="field">
+              <label for="inputStudyHours">Study Hours / Day</label>
+              <input id="inputStudyHours" type="number" name="study_hours_per_day" min="0" max="24" step="0.1" placeholder="e.g., 4.5" required />
+            </div>
+
+            <div class="field">
+              <label for="inputPrevGpa">Previous GPA (0.0 - 10.0)</label>
+              <input id="inputPrevGpa" type="number" name="prev_gpa" min="0" max="10" step="0.01" placeholder="e.g., 8.30" required />
+            </div>
+
+            <div class="field">
+              <label for="inputAssignments">Assignments Submitted (%)</label>
+              <input id="inputAssignments" type="number" name="assignments_submitted" min="0" max="100" step="1" placeholder="e.g., 90" required />
+            </div>
+
+            <div class="field">
+              <label for="inputExtracurricular">Extracurricular Score (0-10)</label>
+              <input id="inputExtracurricular" type="number" name="extracurricular_score" min="0" max="10" step="1" placeholder="e.g., 7" required />
+            </div>
+
+            <div class="field">
+              <label for="inputParentEdu">Parent Education Level</label>
+              <select id="inputParentEdu" name="parent_education" required>
+                <option value="" selected disabled>Select Level</option>
+                <option value="High School">High School</option>
+                <option value="Bachelor">Bachelor</option>
+                <option value="Master">Master</option>
+                <option value="PhD">PhD</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="inputInternet">Internet Access</label>
+              <select id="inputInternet" name="internet_access" required>
+                <option value="" selected disabled>Select</option>
+                <option value="1">Yes (1)</option>
+                <option value="0">No (0)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="inputPartTimeJob">Part-time Job</label>
+              <select id="inputPartTimeJob" name="part_time_job" required>
+                <option value="" selected disabled>Select</option>
+                <option value="0">No (0)</option>
+                <option value="1">Yes (1)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="inputCounseling">Counseling Sessions</label>
+              <input id="inputCounseling" type="number" name="counseling_sessions" min="0" max="50" step="1" placeholder="e.g., 2" required />
+            </div>
+
+            <div class="field span-2">
+              <label for="inputNotes">Behavioral & Observational Notes (NLP Analysis)</label>
+              <textarea id="inputNotes" name="behavioral_notes" rows="4" placeholder="e.g., Highly engaged student, demonstrates active participation, attends tutoring regularly, and shows strong teamwork." required></textarea>
+            </div>
+          </div>
+
+          <div class="row">
+            <button class="btn primary-btn" type="submit" id="btnPredict">
+              <span class="spinner" id="spinPredict" hidden></span>
+              <span class="btn-text">Predict Performance</span>
+            </button>
+            <button class="btn accent-btn" type="button" id="btnPredictInsights">
+              <span class="spinner" id="spinInsights" hidden></span>
+              <span class="btn-text">Predict + AI Insights</span>
+            </button>
+          </div>
+
+          <div class="hint">
+            Endpoints: <code>/api/predict</code> &bull; <code>/api/predict-with-insights</code> &bull; <code>/api/batch</code> &bull; <code>/api/metrics</code>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="panel-header">
+          <h2>Prediction Results</h2>
+          <p>Inference output from Random Forest Regressor & Gradient Boosting Classifiers.</p>
+        </div>
+
+        <div class="cards">
+          <div class="card gpa-card">
+            <div class="k">Predicted GPA</div>
+            <div class="v" id="outGpa">—</div>
+            <div class="gpa-bar-wrapper">
+              <div class="gpa-bar-fill" id="outGpaBar" style="width: 0%;"></div>
+            </div>
+            <div class="s" id="outGpaSub">Scale: 0.00 – 10.00</div>
+          </div>
+
+          <div class="card grade-card">
+            <div class="k">Predicted Grade</div>
+            <div class="v">
+              <span id="outGradeBadge" class="badge grade-badge-default">—</span>
+            </div>
+            <div class="s" id="outGradeSub">Tier: A / B+ / B / C / D / F</div>
+          </div>
+
+          <div class="card status-card">
+            <div class="k">Academic Status</div>
+            <div class="v">
+              <span id="outPassFailBadge" class="badge status-badge-default">—</span>
+            </div>
+            <div class="s" id="outPassFailSub">Pass (&gt;6.0) | At-Risk (4.5–6.0) | Fail (&lt;4.5)</div>
+          </div>
+        </div>
+
+        <div class="panel-header mt">
+          <h2>Personalized AI Insights</h2>
+          <p>Practical guidance generated via OpenRouter & Anthropic LLM key integration.</p>
+        </div>
+        <div class="insights">
+          <div id="outInsightsContainer" class="insights-box">
+            <p class="placeholder-text">Click <strong>"Predict + AI Insights"</strong> to generate personalized academic advising recommendations.</p>
+          </div>
+          <div id="outInsightsErr" class="error" hidden></div>
+        </div>
+
+        <div class="panel-header mt flex-header">
+          <div>
+            <h2>Raw API Response</h2>
+            <p>Structured JSON output from backend predictive models.</p>
+          </div>
+          <button class="btn ghost sm" id="btnToggleRaw">Show / Hide JSON</button>
+        </div>
+        <pre id="outRaw" class="mono raw hidden">—</pre>
+      </section>
+    </main>
+
+    <dialog id="metricsDialog" class="dialog">
+      <div class="dialog-inner">
+        <div class="dialog-top">
+          <div>
+            <div class="dialog-title">Model Performance & Evaluation Metrics</div>
+            <div class="dialog-sub">Cross-validated evaluation benchmarks loaded from <code>artifacts/metrics.json</code></div>
+          </div>
+          <button class="btn ghost sm" id="btnCloseMetrics">✕ Close</button>
+        </div>
+
+        <div id="metricsVisualContainer" class="metrics-visual-grid">
+          <div class="metric-visual-card">
+            <div class="metric-label">GPA Prediction MAE</div>
+            <div class="metric-val" id="metricGpaMae">—</div>
+            <div class="metric-sub">Mean Absolute Error</div>
+          </div>
+          <div class="metric-visual-card">
+            <div class="metric-label">GPA Model R²</div>
+            <div class="metric-val" id="metricGpaR2">—</div>
+            <div class="metric-sub">Coefficient of Determination</div>
+          </div>
+          <div class="metric-visual-card">
+            <div class="metric-label">Grade Accuracy</div>
+            <div class="metric-val" id="metricGradeAcc">—</div>
+            <div class="metric-sub">Multi-Class Classification</div>
+          </div>
+          <div class="metric-visual-card">
+            <div class="metric-label">Pass/Fail F1 Score</div>
+            <div class="metric-val" id="metricPassF1">—</div>
+            <div class="metric-sub">Binary Classification Metric</div>
+          </div>
+        </div>
+
+        <div class="panel-header mt flex-header">
+          <div class="dialog-title sm">Full Evaluation Report</div>
+          <button class="btn ghost sm" id="btnToggleMetricsJson">Toggle JSON</button>
+        </div>
+        <pre id="metricsBody" class="mono raw">Loading…</pre>
+      </div>
+    </dialog>
+
+    <script>
+      window.__REQUIRED_FEATURES__ = {{ required_features | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+  </body>
+</html>
