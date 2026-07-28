@@ -12,12 +12,14 @@ import pandas as pd
 from .preprocess import REQUIRED_FEATURES
 
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 @dataclass
 class Artifacts:
-    model_gpa_path: str = "artifacts/model_gpa.joblib"
-    model_grade_path: str = "artifacts/model_grade.joblib"
-    model_pass_fail_path: str = "artifacts/model_pass_fail.joblib"
-    metrics_path: str = "artifacts/metrics.json"
+    model_gpa_path: str = str(BASE_DIR / "artifacts" / "model_gpa.joblib")
+    model_grade_path: str = str(BASE_DIR / "artifacts" / "model_grade.joblib")
+    model_pass_fail_path: str = str(BASE_DIR / "artifacts" / "model_pass_fail.joblib")
+    metrics_path: str = str(BASE_DIR / "artifacts" / "metrics.json")
 
 
 class Predictor:

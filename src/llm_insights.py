@@ -69,8 +69,10 @@ Avoid medical/diagnostic claims. Avoid inventing facts not in the profile.
         os.getenv("OPENROUTER_API_KEY", "").strip()
         or os.getenv("LLM_API_KEY", "").strip()
         or os.getenv("ANTHROPIC_API_KEY", "").strip()
-        or DEFAULT_API_KEY
     )
+
+    if not api_key:
+        raise RuntimeError("OPENROUTER_API_KEY environment variable is not configured on server.")
 
     if api_key.startswith("sk-ant-"):
         try:
