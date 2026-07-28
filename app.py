@@ -33,10 +33,13 @@ def create_app() -> Flask:
 
     @app.post("/api/predict")
     def api_predict():
-        payload = request.get_json(force=True, silent=False) or {}
-        student = _extract_student_payload(payload)
-        pred = predictor.predict_one(student)
-        return jsonify({"student": student, "predictions": pred})
+        try:
+            payload = request.get_json(force=True, silent=False) or {}
+            student = _extract_student_payload(payload)
+            pred = predictor.predict_one(student)
+            return jsonify({"student": student, "predictions": pred})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
     @app.post("/api/batch")
     def api_batch():

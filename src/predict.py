@@ -30,9 +30,18 @@ class Predictor:
         self._model_pass = None
 
     def load(self) -> "Predictor":
-        self._model_gpa = joblib.load(self.artifacts.model_gpa_path)
-        self._model_grade = joblib.load(self.artifacts.model_grade_path)
-        self._model_pass = joblib.load(self.artifacts.model_pass_fail_path)
+        try:
+            self._model_gpa = joblib.load(self.artifacts.model_gpa_path)
+            self._model_grade = joblib.load(self.artifacts.model_grade_path)
+            self._model_pass = joblib.load(self.artifacts.model_pass_fail_path)
+        except Exception as e:
+            # Self-healing: if joblib unpickling fails due to environment/version differences, retrain models dynamically
+            from .train import train_models
+
+            train_models()
+            self._model_gpa = joblib.load(self.artifacts.model_gpa_path)
+            self._model_grade = joblib.load(self.artifacts.model_grade_path)
+            self._model_pass = joblib.load(self.artifacts.model_pass_fail_path)
         return self
 
     def _ensure_loaded(self) -> None:
