@@ -27,18 +27,20 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from .preprocess import REQUIRED_FEATURES, SentimentFeatures, clean_student_data, load_student_data
 
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 @dataclass
 class TrainConfig:
-    csv_path: str = "data/raw/student_data.csv"
-    artifacts_dir: str = "artifacts"
+    csv_path: str = str(BASE_DIR / "data" / "raw" / "student_data.csv")
+    artifacts_dir: str = str(BASE_DIR / "artifacts")
     test_size: float = 0.2
     random_state: int = 42
 
-    model_gpa_path: str = "artifacts/model_gpa.joblib"
-    model_grade_path: str = "artifacts/model_grade.joblib"
-    model_pass_fail_path: str = "artifacts/model_pass_fail.joblib"
-    metrics_path: str = "artifacts/metrics.json"
-    schema_path: str = "artifacts/schema.json"
+    model_gpa_path: str = str(BASE_DIR / "artifacts" / "model_gpa.joblib")
+    model_grade_path: str = str(BASE_DIR / "artifacts" / "model_grade.joblib")
+    model_pass_fail_path: str = str(BASE_DIR / "artifacts" / "model_pass_fail.joblib")
+    metrics_path: str = str(BASE_DIR / "artifacts" / "metrics.json")
+    schema_path: str = str(BASE_DIR / "artifacts" / "schema.json")
 
 
 def _build_preprocessor() -> ColumnTransformer:

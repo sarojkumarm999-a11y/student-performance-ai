@@ -9,8 +9,7 @@ __pycache__/
 # Model files
 model.pkl
 
-# Data files (optional)
-data/raw/
+# Data files
 data/processed/
 
 # VS Code settings
